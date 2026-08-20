@@ -1,0 +1,374 @@
+[project]
+title = "Professional Python Project Explainer"
+source_project = "datafun-01-foundations"
+
+[[item]]
+line = "datafun-01-foundations/"
+path = "."
+attention = false
+description = "Root directory of the example repository."
+rationale = "Keeps project code, data, documentation, tests, configuration, and automation together in one version-controlled project."
+
+[[item]]
+line = "├── .annotations/"
+path = ".annotations/"
+attention = false
+description = "Directory for repository annotation metadata."
+rationale = "Separates repository annotations from source code and documentation."
+
+[[item]]
+line = "│   └── annotations.md"
+path = ".annotations/annotations.md"
+attention = false
+description = "Markdown file containing repository annotations."
+rationale = "Provides a dedicated location for annotation content used by repository tooling or maintenance."
+
+[[item]]
+line = "├── .coverage"
+path = ".coverage"
+attention = false
+description = "Generated coverage data file."
+rationale = "Stores test-coverage measurements produced by coverage tooling."
+
+[[item]]
+line = "├── .editorconfig"
+path = ".editorconfig"
+attention = false
+description = "Shared editor configuration file."
+rationale = "Defines consistent editor behavior such as indentation, line endings, and final newlines across development environments."
+
+[[item]]
+line = "├── .gitattributes"
+path = ".gitattributes"
+attention = false
+description = "Git attributes configuration file."
+rationale = "Defines repository-specific Git behavior for selected files and file types."
+
+[[item]]
+line = "├── .github/"
+path = ".github/"
+attention = false
+description = "Directory for GitHub configuration and automation."
+rationale = "Centralizes GitHub Actions workflows, dependency automation, and repository-specific GitHub settings."
+
+[[item]]
+line = "│   ├── .yamllint.yml"
+path = ".github/.yamllint.yml"
+attention = false
+description = "YAML linting configuration file."
+rationale = "Defines validation rules for YAML files used by repository automation."
+
+[[item]]
+line = "│   ├── dependabot.yml"
+path = ".github/dependabot.yml"
+attention = false
+description = "Dependabot configuration file."
+rationale = "Defines automated dependency-update checks for the repository."
+
+[[item]]
+line = "│   ├── lychee.toml"
+path = ".github/lychee.toml"
+attention = false
+description = "Lychee link-checker configuration file."
+rationale = "Defines link-validation behavior for repository documentation and other text files."
+
+[[item]]
+line = "│   └── workflows/"
+path = ".github/workflows/"
+attention = false
+description = "Directory containing GitHub Actions workflows."
+rationale = "Defines automated checks and deployment processes triggered by repository events."
+
+[[item]]
+line = "│       ├── ci-python-zensical.yml"
+path = ".github/workflows/ci-python-zensical.yml"
+attention = false
+description = "Continuous-integration workflow for Python and Zensical."
+rationale = "Runs automated project-quality checks when repository changes are pushed or proposed."
+
+[[item]]
+line = "│       ├── deploy-zensical.yml"
+path = ".github/workflows/deploy-zensical.yml"
+attention = false
+description = "GitHub Actions workflow for Zensical deployment."
+rationale = "Builds and publishes the project documentation site from repository documentation sources."
+
+[[item]]
+line = "│       └── links.yml"
+path = ".github/workflows/links.yml"
+attention = false
+description = "GitHub Actions workflow for link validation."
+rationale = "Checks repository links automatically so broken references can be detected."
+
+[[item]]
+line = "├── .gitignore"
+path = ".gitignore"
+attention = false
+description = "Git ignore configuration file."
+rationale = "Prevents generated, local, temporary, and environment-specific files from being committed."
+
+[[item]]
+line = "├── .markdownlint-cli2.yaml"
+path = ".markdownlint-cli2.yaml"
+attention = false
+description = "Markdownlint configuration file."
+rationale = "Defines automated Markdown formatting and structure checks."
+
+[[item]]
+line = "├── .pre-commit-config.yaml"
+path = ".pre-commit-config.yaml"
+attention = false
+description = "Pre-commit hook configuration file."
+rationale = "Defines automated checks that can run before commits are created."
+
+[[item]]
+line = "├── .python-version"
+path = ".python-version"
+attention = false
+description = "Project Python-version declaration."
+rationale = "Keeps local development and automation aligned on the intended Python version."
+
+[[item]]
+line = "├── .vscode/"
+path = ".vscode/"
+attention = false
+description = "Directory for shared Visual Studio Code configuration."
+rationale = "Keeps editor settings, extension recommendations, and editor-specific documentation with the project."
+
+[[item]]
+line = "│   ├── ABOUT_THIS_FOLDER.md"
+path = ".vscode/ABOUT_THIS_FOLDER.md"
+attention = false
+description = "Documentation describing the `.vscode` directory."
+rationale = "Explains the purpose of repository-level Visual Studio Code configuration files."
+
+[[item]]
+line = "│   ├── extensions.json"
+path = ".vscode/extensions.json"
+attention = false
+description = "Visual Studio Code extension recommendations."
+rationale = "Identifies extensions that support the project development environment."
+
+[[item]]
+line = "│   └── settings.json"
+path = ".vscode/settings.json"
+attention = false
+description = "Shared Visual Studio Code workspace settings."
+rationale = "Provides consistent repository-specific editor behavior."
+
+[[item]]
+line = "├── AGENTS.md"
+path = "AGENTS.md"
+attention = false
+description = "Repository instructions for AI coding agents."
+rationale = "Provides repository-specific constraints and conventions for agentic development tools."
+
+[[item]]
+line = "├── AI_USE.md"
+path = "AI_USE.md"
+attention = false
+description = "Project policy for the use of AI tools."
+rationale = "Records the project expectations and boundaries for AI-assisted work."
+
+[[item]]
+line = "├── CITATION.cff"
+path = "CITATION.cff"
+attention = false
+description = "Machine-readable citation metadata."
+rationale = "Provides standardized project citation information for GitHub and research tooling."
+
+[[item]]
+line = "├── data/"
+path = "data/"
+attention = true
+description = "Directory containing project data."
+rationale = "Provides a predictable location for data used by the project."
+
+[[item]]
+line = "│   └── penguins.csv"
+path = "data/penguins.csv"
+attention = true
+description = "CSV file containing the penguins dataset used by the project."
+rationale = "Provides the source data used for the project examples and analysis."
+
+[[item]]
+line = "├── docs/"
+path = "docs/"
+attention = true
+description = "Directory containing project documentation source files."
+rationale = "Keeps project instructions, concepts, data documentation, reference material, and documentation assets with the repository."
+
+[[item]]
+line = "│   ├── api.md"
+path = "docs/api.md"
+attention = false
+description = "API documentation page for the public Python interface."
+rationale = "Provides generated reference documentation for public modules, functions, and docstrings."
+
+[[item]]
+line = "│   ├── concepts.md"
+path = "docs/concepts.md"
+attention = true
+description = "Documentation page for project concepts."
+rationale = "Separates conceptual explanations from procedural project instructions."
+
+[[item]]
+line = "│   ├── data-card.md"
+path = "docs/data-card.md"
+attention = true
+description = "Documentation page describing the project data."
+rationale = "Records the dataset source, structure, variables, meaning, and relevant limitations."
+
+[[item]]
+line = "│   ├── images/"
+path = "docs/images/"
+attention = false
+description = "Directory containing documentation images."
+rationale = "Keeps screenshots and other visual documentation assets with the documentation source."
+
+[[item]]
+line = "│   │   ├── .gitkeep"
+path = "docs/images/.gitkeep"
+attention = false
+description = "Placeholder file used to preserve the images directory in Git."
+rationale = "Git tracks files rather than empty directories, so the placeholder preserves the directory when no other images are present."
+
+[[item]]
+line = "│   ├── index.md"
+path = "docs/index.md"
+attention = true
+description = "Landing page for the published project documentation."
+rationale = "Provides the primary entry point to the project documentation site."
+
+[[item]]
+line = "│   ├── module/"
+path = "docs/module/"
+attention = false
+description = "Directory containing additional project-specific documentation pages."
+rationale = "Provides a location for focused material that extends the common documentation structure."
+
+[[item]]
+line = "│   └── project-instructions.md"
+path = "docs/project-instructions.md"
+attention = true
+description = "Project-specific instruction page."
+rationale = "Keeps requirements unique to this project separate from shared cross-project workflows."
+
+[[item]]
+line = "├── LICENSE"
+path = "LICENSE"
+attention = false
+description = "Software license for the repository."
+rationale = "States the legal terms for using, modifying, and redistributing the project."
+
+[[item]]
+line = "├── pyproject.toml"
+path = "pyproject.toml"
+attention = false
+description = "Standard Python project configuration file."
+rationale = "Centralizes project metadata, dependencies, and Python-tool configuration."
+
+[[item]]
+line = "├── README.md"
+path = "README.md"
+attention = true
+description = "Primary repository overview."
+rationale = "Provides the main GitHub-facing introduction and entry point for the project."
+
+[[item]]
+line = "├── shape.ps1"
+path = "shape.ps1"
+attention = false
+description = "PowerShell script that prints the repository file-and-folder structure."
+rationale = "Provides a repeatable way to inspect or capture the current project shape."
+
+[[item]]
+line = "├── sit.ps1"
+path = "sit.ps1"
+attention = false
+description = "PowerShell helper script for a repository-specific task."
+rationale = "Encapsulates a repeated command-line workflow in a reusable script."
+
+[[item]]
+line = "├── src/"
+path = "src/"
+attention = true
+description = "Source-code directory for the Python project."
+rationale = "Separates importable Python code from tests, data, documentation, and repository configuration."
+
+[[item]]
+line = "│   └── datafun/"
+path = "src/datafun/"
+attention = true
+description = "Directory containing the importable `datafun` Python package."
+rationale = "Groups the project Python modules under a single package namespace."
+
+[[item]]
+line = "│       ├── __init__.py"
+path = "src/datafun/__init__.py"
+attention = false
+description = "Package initializer for `datafun`."
+rationale = "Defines the package boundary and can expose selected package-level names."
+
+[[item]]
+line = "│       ├── _version.py"
+path = "src/datafun/_version.py"
+attention = false
+description = "Internal module containing or supporting package version information."
+rationale = "Provides a consistent programmatic source for the project version."
+
+[[item]]
+line = "│       ├── app.py"
+path = "src/datafun/app.py"
+attention = true
+description = "Main application module for the project."
+rationale = "Coordinates project execution while delegating reusable work to supporting modules."
+
+[[item]]
+line = "│       ├── py.typed"
+path = "src/datafun/py.typed"
+attention = false
+description = "Marker file declaring that the package provides type information."
+rationale = "Allows type-aware tooling to recognize the package as typed."
+
+[[item]]
+line = "│       └── utils_data.py"
+path = "src/datafun/utils_data.py"
+attention = true
+description = "Module containing reusable data-related functions."
+rationale = "Separates reusable data operations from application orchestration."
+
+[[item]]
+line = "├── tests/"
+path = "tests/"
+attention = true
+description = "Directory containing automated tests."
+rationale = "Keeps executable verification of project behavior separate from production source code."
+
+[[item]]
+line = "│   ├── test_app.py"
+path = "tests/test_app.py"
+attention = true
+description = "Automated tests for application behavior."
+rationale = "Verifies expected behavior associated with the main application module."
+
+[[item]]
+line = "│   └── test_data_utils.py"
+path = "tests/test_data_utils.py"
+attention = true
+description = "Automated tests for data utility functions."
+rationale = "Verifies expected behavior of reusable data operations."
+
+[[item]]
+line = "├── uv.lock"
+path = "uv.lock"
+attention = false
+description = "Dependency lock file generated by uv."
+rationale = "Records the resolved dependency set used to create reproducible project environments."
+
+[[item]]
+line = "└── zensical.toml"
+path = "zensical.toml"
+attention = false
+description = "Configuration file for the Zensical documentation site."
+rationale = "Defines how the files under `docs/` are organized, built, and published."

@@ -1,0 +1,25 @@
+[project]
+name = "professional-python-project-explainer"
+version = "0.1.0"
+description = "Interactive Marimo explainer for the structure of a professional Python project."
+requires-python = ">=3.14"
+dependencies = [
+    "marimo>=0.19.7",
+]
+
+[dependency-groups]
+
+dev = [
+    # REQ.DEV.DEPS: External packages used for linting, testing, type checking, etc.
+    "pre-commit", # WHY: Pre-commit hooks for consistent formatting and linting.
+    "pytest",     # WHY: Test framework for unit and integration tests.
+    "pytest-cov", # WHY: Test coverage reporting for quality metrics and CI gating.
+    "ruff",       # WHY: Fast linting and formatting for Python code.
+    "ty",         # WHY: Type checking for static analysis and type safety.
+]
+
+[tool.ty.environment]
+root = ["./src"]
+
+[tool.uv]
+package = false

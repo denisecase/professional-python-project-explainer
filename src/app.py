@@ -1,0 +1,148 @@
+"""app.py - interactive explainer.
+
+Run from the repository root with:
+
+    uv run marimo run src/app.py
+
+Edit with:
+
+    uv run marimo edit src/app.py
+"""
+
+import marimo
+
+__generated_with = "0.19.7"
+app = marimo.App(width="full")
+
+
+@app.cell
+def _():
+    from pathlib import Path
+
+    import marimo as mo
+
+    from app_core import (
+        get_item_by_path,
+        get_tree_label,
+        index_items_by_path,
+        load_project_data,
+    )
+
+    return (
+        Path,
+        get_item_by_path,
+        get_tree_label,
+        index_items_by_path,
+        load_project_data,
+        mo,
+    )
+
+
+@app.cell
+def _(Path, index_items_by_path, load_project_data):
+    data_path = Path(__file__).parent / "public" / "data.toml"
+
+    project, items = load_project_data(data_path)
+    items_by_path = index_items_by_path(items)
+
+    return items, items_by_path, project
+
+
+@app.cell
+def _(mo):
+    get_selected_path, set_selected_path = mo.state("README.md")
+    return get_selected_path, set_selected_path
+
+
+@app.cell
+def _(get_tree_label, items, mo, project, set_selected_path):
+    def make_tree_button(item):
+        path = str(item["path"])
+        attention = bool(item["attention"])
+
+        button = mo.ui.button(
+            label=get_tree_label(item),
+            kind="warn" if attention else "neutral",
+            tooltip=str(item["description"]),
+            on_click=lambda _value, selected=path: (
+                set_selected_path(selected),
+                selected,
+            )[1],
+        )
+
+        return mo.hstack(
+            [button],
+            justify="start",
+        )
+
+    tree_rows = [make_tree_button(item) for item in items]
+
+    tree_panel = mo.vstack(
+        [
+            mo.md(
+                rf"""
+## {project["source_project"]}
+
+**Highlighted entries hold key project-specific content.**
+"""
+            ),
+            mo.vstack(tree_rows, gap=0.08).style(
+                max_height="70vh",
+                overflow="auto",
+                padding="0.25rem",
+            ),
+        ],
+        gap=0.5,
+    )
+
+    return (tree_panel,)
+
+
+@app.cell
+def _(get_item_by_path, get_selected_path, items_by_path, mo):
+    selected_path = get_selected_path()
+    selected = get_item_by_path(items_by_path, selected_path)
+
+    details_panel = mo.md(
+        rf"""
+## `{selected["path"]}`
+
+### Description
+
+{selected["description"]}
+
+### Rationale
+
+{selected["rationale"]}
+"""
+    ).callout(kind="warn" if selected["attention"] else "neutral")
+
+    return (details_panel,)
+
+
+@app.cell
+def _(details_panel, mo, project, tree_panel):
+    mo.vstack(
+        [
+            mo.md(
+                rf"""
+# {project["title"]}
+
+A Marimo app that explains common files and folders in a professional Python project.
+Each entry is **clickable**; highlighted entries hold key project-specific content.
+"""
+            ),
+            mo.hstack(
+                [tree_panel, details_panel],
+                widths=[1.15, 1.0],
+                align="start",
+                wrap=True,
+                gap=1.25,
+            ),
+        ],
+        gap=1.0,
+    )
+
+
+if __name__ == "__main__":
+    app.run()
