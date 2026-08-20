@@ -1,10 +1,16 @@
 # Professional Python Project Explainer
 
-A small standalone Marimo app for helping new Python users understand the files and folders in a professional Python project.
+[![Live App](https://img.shields.io/badge/open-live%20app-brightgreen)](https://denisecase.github.io/professional-python-project-explainer/)
+[![marimo](https://img.shields.io/badge/marimo-reactive%20app-orange)](https://marimo.io/)
+[![Python 3.14](https://img.shields.io/badge/python-3.14%2B-blue?logo=python)](./pyproject.toml)
+[![uv](https://img.shields.io/badge/uv%20managed-uv-purple)](https://github.com/astral-sh/uv)
+[![MIT](https://img.shields.io/badge/license-see%20LICENSE-yellow.svg)](./LICENSE)
 
-The first version uses the `datafun-01-foundations` project shape supplied manually in `data.toml`.
+> A Marimo app that explains common files and folders in a professional Python project.
 
-Highlighted entries are the places students should pay attention to first. Every entry is clickable and explains what it is, why it exists, and what a student should do with it.
+## Open the App
+
+- [Professional Python Project Explorer](https://denisecase.github.io/professional-python-project-explainer/)
 
 ## Run
 
@@ -18,9 +24,3 @@ uv run marimo run src/app.py
 ```powershell
 uv run marimo edit app.py
 ```
-
-## Maintain
-
-- `data.toml` owns the ordered tree and explanatory metadata.
-- `app.py` only renders the data.
-- Later, an automated workflow can regenerate the tree entries from a canonical project while preserving or validating the explanatory metadata by `path`.
