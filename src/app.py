@@ -22,6 +22,7 @@ def _():
     import marimo as mo
 
     from app_core import (
+        filter_items,
         get_item_by_path,
         get_tree_label,
         index_items_by_path,
@@ -30,6 +31,7 @@ def _():
 
     return (
         Path,
+        filter_items,
         get_item_by_path,
         get_tree_label,
         index_items_by_path,
@@ -59,7 +61,29 @@ def _(mo):
 
 
 @app.cell
-def _(get_tree_label, items, mo, project, set_selected_path):
+def _(mo):
+    show_all = mo.ui.switch(
+        value=False,
+        label="Show all files",
+    )
+    return (show_all,)
+
+
+@app.cell
+def _(
+    filter_items,
+    get_tree_label,
+    items,
+    mo,
+    project,
+    set_selected_path,
+    show_all,
+):
+    visible_items = filter_items(
+        items,
+        highlighted_only=not show_all.value,
+    )
+
     def make_tree_button(item):
         path = str(item["path"])
         attention = bool(item["attention"])
@@ -79,7 +103,7 @@ def _(get_tree_label, items, mo, project, set_selected_path):
             justify="start",
         )
 
-    tree_rows = [make_tree_button(item) for item in items]
+    tree_rows = [make_tree_button(item) for item in visible_items]
 
     tree_panel = mo.vstack(
         [
@@ -90,6 +114,7 @@ def _(get_tree_label, items, mo, project, set_selected_path):
 **Highlighted entries hold key project-specific content.**
 """
             ),
+            show_all,
             mo.vstack(tree_rows, gap=0.08).style(
                 max_height="70vh",
                 overflow="auto",
@@ -111,13 +136,21 @@ def _(get_item_by_path, get_selected_path, items_by_path, mo):
         rf"""
 ## `{selected["path"]}`
 
+---
+
 ### Description
 
 {selected["description"]}
 
+---
+
 ### Rationale
 
 {selected["rationale"]}
+
+---
+
+[**🔗 Example**](https://github.com/denisecase/datafun-01-foundations)
 """
     ).callout(kind="warn" if selected["attention"] else "neutral")
 
@@ -134,6 +167,9 @@ def _(details_panel, mo, project, tree_panel):
 
 A Marimo app that explains common files and folders in a professional Python project.
 Each entry is **clickable**; highlighted entries hold key project-specific content.
+[🔗 View source](https://github.com/denisecase/professional-python-project-explainer).
+
+---
 """
             ),
             mo.hstack(
