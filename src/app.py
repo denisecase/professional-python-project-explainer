@@ -39,8 +39,12 @@ def _():
 
 
 @app.cell
-def _(Path, index_items_by_path, load_project_data):
-    data_path = Path(__file__).parent / "public" / "data.toml"
+def _(index_items_by_path, load_project_data, mo):
+    notebook_location = mo.notebook_location()
+    if notebook_location is None:
+        raise RuntimeError("Unable to determine notebook location.")
+
+    data_path = notebook_location / "public" / "data.toml"
 
     project, items = load_project_data(data_path)
     items_by_path = index_items_by_path(items)

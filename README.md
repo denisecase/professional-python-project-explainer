@@ -22,5 +22,5 @@ uv run marimo run src/app.py
 ## Edit
 
 ```powershell
-uv run marimo edit app.py
+uv run marimo edit src/app.py
 ```

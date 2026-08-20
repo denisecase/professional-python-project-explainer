@@ -1,16 +1,23 @@
 """app_core.py - reusable logic."""
 
 import tomllib
-from pathlib import Path
+from pathlib import Path, PurePath
 from typing import Any
+from urllib.request import urlopen
 
 
 def load_project_data(
-    data_path: Path,
+    data_path: Path | PurePath | str,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Load project metadata and project structure items from TOML."""
-    with data_path.open("rb") as file:
-        project_data = tomllib.load(file)
+    location = str(data_path)
+
+    if location.startswith(("http://", "https://")):
+        with urlopen(location) as response:
+            project_data = tomllib.loads(response.read().decode("utf-8"))
+    else:
+        with Path(location).open("rb") as file:
+            project_data = tomllib.load(file)
 
     project = project_data["project"]
     items = project_data["item"]
