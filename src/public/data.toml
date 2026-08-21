@@ -282,6 +282,13 @@ description = "Software license for the repository."
 rationale = "States the legal terms for using, modifying, and redistributing the project."
 
 [[item]]
+line = "├── project.log"
+path = "project.log"
+attention = true
+description = "Generated log file from running the project."
+rationale = "Provides a persistent record of project execution, including key steps, selected values, and messages useful for reviewing and documenting results."
+
+[[item]]
 line = "├── pyproject.toml"
 path = "pyproject.toml"
 attention = false
