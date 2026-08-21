@@ -108,13 +108,6 @@ description = "Git ignore configuration file."
 rationale = "Prevents generated, local, temporary, and environment-specific files from being committed."
 
 [[item]]
-line = "├── .markdownlint-cli2.yaml"
-path = ".markdownlint-cli2.yaml"
-attention = false
-description = "Markdownlint configuration file."
-rationale = "Defines automated Markdown formatting and structure checks."
-
-[[item]]
 line = "├── .pre-commit-config.yaml"
 path = ".pre-commit-config.yaml"
 attention = false
