@@ -382,14 +382,14 @@ rationale = "Configures test behavior shared across test modules, including non-
 [[item]]
 line = "│   ├── test_app.py"
 path = "tests/test_app.py"
-attention = true
+attention = false
 description = "Automated tests for application behavior."
 rationale = "Verifies expected behavior associated with the main application module."
 
 [[item]]
 line = "│   └── test_utils_data.py"
 path = "tests/test_utils_data.py"
-attention = true
+attention = false
 description = "Automated tests for data utility functions."
 rationale = "Verifies expected behavior of reusable data operations."
 
