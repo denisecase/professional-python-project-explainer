@@ -232,6 +232,33 @@ path = "docs/images/.gitkeep"
 attention = false
 description = "Placeholder file used to preserve the images directory in Git."
 rationale = "Git tracks files rather than empty directories, so the placeholder preserves the directory when no other images are present."
+[[item]]
+line = "│   │   └── feature-target-scatter.png"
+path = "docs/images/feature-target-scatter.png"
+attention = true
+description = "Generated scatter plot showing the selected feature and target."
+rationale = "Provides a visible project result that updates when the selected numeric feature and target are changed."
+
+[[item]]
+line = "│   ├── javascripts/"
+path = "docs/javascripts/"
+attention = false
+description = "Directory containing JavaScript enhancements for the documentation site."
+rationale = "Keeps optional interactive documentation features separate from the Markdown content."
+
+[[item]]
+line = "│   │   ├── concept-quiz.js"
+path = "docs/javascripts/concept-quiz.js"
+attention = false
+description = "JavaScript for generating interactive concept practice."
+rationale = "Creates randomized self-check questions from the structured concepts documented on the Concepts page."
+
+[[item]]
+line = "│   │   └── read-aloud.js"
+path = "docs/javascripts/read-aloud.js"
+attention = false
+description = "JavaScript providing read-aloud controls for documentation pages."
+rationale = "Uses browser speech synthesis to provide an optional audio presentation of project documentation."
 
 [[item]]
 line = "│   ├── index.md"
@@ -239,13 +266,6 @@ path = "docs/index.md"
 attention = true
 description = "Landing page for the published project documentation."
 rationale = "Provides the primary entry point to the project documentation site."
-
-[[item]]
-line = "│   ├── module/"
-path = "docs/module/"
-attention = false
-description = "Directory containing additional project-specific documentation pages."
-rationale = "Provides a location for focused material that extends the common documentation structure."
 
 [[item]]
 line = "│   └── project-instructions.md"
@@ -346,6 +366,13 @@ description = "Directory containing automated tests."
 rationale = "Keeps executable verification of project behavior separate from production source code."
 
 [[item]]
+line = "│   ├── conftest.py"
+path = "tests/conftest.py"
+attention = false
+description = "Shared pytest configuration for project tests."
+rationale = "Configures test behavior shared across test modules, including non-interactive Matplotlib rendering."
+
+[[item]]
 line = "│   ├── test_app.py"
 path = "tests/test_app.py"
 attention = true
@@ -353,8 +380,8 @@ description = "Automated tests for application behavior."
 rationale = "Verifies expected behavior associated with the main application module."
 
 [[item]]
-line = "│   └── test_data_utils.py"
-path = "tests/test_data_utils.py"
+line = "│   └── test_utils_data.py"
+path = "tests/test_utils_data.py"
 attention = true
 description = "Automated tests for data utility functions."
 rationale = "Verifies expected behavior of reusable data operations."
