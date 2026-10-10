@@ -1,0 +1,54 @@
+# ============================================================
+# CITATION.cff (How to cite this project)
+# ============================================================
+# REQ: Professional open projects SHOULD include this file.
+# USAGE: See https://citation-file-format.github.io/ for details.
+# check with:
+# uvx cffconvert --validate
+
+cff-version: "1.2.0"
+message: "If using this project, please cite it as described in CITATION.cff."
+type: software
+
+title: professional-python-project-explainer
+version: "0.1.0"
+date-released: "2026-10-10"
+
+authors:
+  - family-names: Case
+    given-names: Denise M.
+    orcid: "https://orcid.org/0000-0001-6165-7389"
+    affiliation: "Northwest Missouri State University, USA"
+
+repository-code: "https://github.com/denisecase/pro-analytics-02"
+url: "https://github.com/denisecase/pro-analytics-02"
+license: MIT
+
+abstract: |
+  Professional Python project explainer describes some of the common files in a professional Python project.
+  Many are silent helpers, so letting curiosity drive the exploration is encouraged.
+
+keywords:
+  - data-analytics
+  - python
+  - project-explainer
+  - education
+  - teaching
+  - learning
+  - practitioners
+  - computer-science-education
+  - data-analytics-education
+  - professional-python
+  - src-layout
+  - ci-cd
+  - github-actions
+  - professional-practice
+  - git
+  - github
+  - marimo
+  - open-source
+  - prek
+  - ruff
+  - ty
+  - uv
+  - zensical

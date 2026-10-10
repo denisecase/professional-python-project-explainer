@@ -4,13 +4,18 @@
 ============================================================
 sit.ps1 (ALL-PY-SRC-REPOS)
 ============================================================
-Updated: 2026-08-15 (uses pyproject.toml [dependency-groups]; uv sync installs dev and docs groups by default)
+Updated: 2026-09-25
 
-Situate project dependencies, lint, test, and build docs.
-For Python tooling repos only.
+This is a PowerShell script for managing
+the development environment of the project.
 
-Run with:
+PowerShell (pwsh) is available for all major operating systems
+and is a popular terminal for developers.
+
+To get situated, run this script in your PowerShell terminal:
+
 .\sit.ps1
+
 #>
 
 Set-StrictMode -Version Latest
@@ -39,18 +44,21 @@ if (Test-Path "pyproject.toml") {
     }
 }
 
+# set up or update Python environment
+# uvx pup-clean --delete
 uv self update
 uv python install
 uv lock --upgrade
 uv sync
+uv audit
 
-uv run pre-commit install
-uv run pre-commit autoupdate
-
+# set up and run git hooks
+uvx prek install --force
+uvx prek update
 git add -A
-uv run pre-commit run --all-files
+uvx prek run --all-files
 # repeat if changes were made
-uv run pre-commit run --all-files
+uvx prek run --all-files
 
 # run common chores
 uv run ruff format .

@@ -1,25 +1,62 @@
+# ============================================================
+# pyproject.toml (Python project configuration)
+# ============================================================
+# Updated: 2026-10-10
+# REQ: Python projects SHOULD include pyproject.toml as the single source of truth.
+# WHY: Centralizes project configuration.
+# CUSTOM: Update identity and build tool src folders.
+
+# ============================================================
+# SECTION 1: PROJECT IDENTITY (name, version, CUSTOM dependencies)
+# ============================================================
+
 [project]
 name = "professional-python-project-explainer"
 version = "0.1.0"
 description = "Interactive Marimo explainer for the structure of a professional Python project."
 requires-python = ">=3.14"
 dependencies = [
-    "marimo>=0.19.7",
+    "marimo>=0.25.1",
 ]
 
 [dependency-groups]
-
+# WHY: Dependency groups separate development and documentation tools from project runtime dependencies.
 dev = [
     # REQ.DEV.DEPS: External packages used for linting, testing, type checking, etc.
-    "pre-commit", # WHY: Pre-commit hooks for consistent formatting and linting.
     "pytest",     # WHY: Test framework for unit and integration tests.
-    "pytest-cov", # WHY: Test coverage reporting for quality metrics and CI gating.
+    "pytest-cov", # WHY: Provides test coverage reporting for quality metrics and CI gating.
     "ruff",       # WHY: Fast linting and formatting for Python code.
     "ty",         # WHY: Type checking for static analysis and type safety.
 ]
+docs = [
+  # REQ: External packages used to generate project documentation.
+  "mkdocstrings[python]", # WHY: Auto-generate API docs from docstrings.
+  "zensical", # WHY: Generate and maintain project documentation.
+]
+
+# ============================================================
+# === SECTION 2: TOOL CONFIGURATION ===
+# ============================================================
+
+# === MARKDOWNLINT (MARKDOWN LINTING) ===
+
+[tool.markdownlint]
+MD033 = false # WHY: Allow inline HTML such as details, summary, iframe, and video.
+
+
+# === UV (PYTHON ENVIRONMENT AND DEPENDENCY MANAGEMENT) ===
+
+[tool.uv]
+# WHY: Install all repository tooling with the canonical `uv sync`.
+default-groups = "all"
+package = false
+
+# WHY: Give a bit of time to find hijacked releases before installing.
+# CUSTOM: Should match `uv run prek update --freeze --cooldown-days 7`.
+exclude-newer = "7 days"
+
+# WHY: Repository tooling updates must be usable immediately.
+exclude-newer-package = {se-theory-reference-kit = false}
 
 [tool.ty.environment]
 root = ["./src"]
-
-[tool.uv]
-package = false
