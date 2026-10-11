@@ -1,0 +1,276 @@
+# ============================================================
+# .github/workflows/deploy-marimo.yml (CUSTOM: MARIMO)
+# ============================================================
+# Updated: 2026-10-11
+#
+# WHAT: A GitHub Actions workflow that builds and deploys a Marimo
+#       application to GitHub Pages.
+#       GitHub Actions is GitHub's built-in project automation service.
+#       This YAML file tells GitHub what commands to run and when to run them.
+#
+# WHEN: Use for Python projects that publish an interactive Marimo
+#       application as a static website using WebAssembly (WASM).
+#       The application can run in a browser without a Python server.
+#
+# TRIGGER: Runs automatically after the standard Zensical deployment
+#          succeeds on the main branch.
+#          It can also be started manually from the Actions tab.
+#          GitHub runs the workflow on a fresh, temporary computer.
+#
+# WHY: A published application lets others interact with the project
+#      without installing Python or downloading its source code.
+#      Automated deployment keeps the published application associated
+#      with the repository's version-controlled source.
+#
+# WHY: Compose reusable GitHub Actions workflows rather than changing
+#      standard workflows for individual project requirements.
+#      The standard Zensical workflow publishes documentation first.
+#      This workflow then publishes documentation and the Marimo application
+#      together, without modifying the standard deployment workflow.
+#
+# CI/CD: Continuous Integration (CI) automatically checks changes.
+#        Continuous Delivery/Deployment (CD) prepares or publishes work.
+#        This workflow performs deployment.
+#        A separate CI workflow checks project quality and tests.
+#
+# SKILLS: Git, GitHub, GitHub Actions, CI/CD, Python, uv,
+#         Marimo, WebAssembly, static websites, and GitHub Pages.
+#
+# REQ: Repository MUST contain .python-version.
+# REQ: Repository MUST contain a committed uv.lock.
+# REQ: The Marimo application MUST exist at src/app.py.
+# REQ: Marimo MUST be available in the project environment.
+# REQ: Repository Settings -> Pages -> Build and deployment ->
+#      Source MUST be GitHub Actions.
+# REQ: Deployment MUST use the committed uv.lock without updating it.
+# REQ: The standard Zensical workflow MUST be enabled.
+# REQ: Its workflow name MUST match "Docs Deploy (Zensical)".
+#
+# SECURITY: The workflow_run trigger requires careful trust boundaries.
+# REQ: Accept upstream runs only from this repository's main branch.
+# REQ: Accept only push and workflow_dispatch upstream events.
+# REQ: Require successful upstream completion before building.
+# REQ: Do not execute pull-request or fork source in this workflow.
+# REQ: Grant Pages write permissions only to the deployment job.
+#
+# OBS: GitHub Actions workflow_run connects this workflow to Zensical.
+# OBS: Manual dispatch allows this workflow to run independently.
+# OBS: The workflow builds the complete website in site/.
+# OBS: Zensical generates the documentation in site/.
+# OBS: Marimo is exported into site/app/.
+# OBS: Both are uploaded and deployed together as one Pages artifact.
+# OBS: GitHub Pages deployments replace the previously published site.
+#      Separate deployment workflows do not merge their published files.
+# OBS: The standard Zensical workflow remains unchanged and enabled.
+# OBS: The final Marimo deployment replaces the documentation-only site
+#      with the complete documentation and interactive application.
+# ============================================================
+
+# Name shown in the repository Actions tab.
+name: Deploy Marimo App
+
+# WHY: Automatically compose the standard and specialized deployments.
+# SECURITY: workflow_run is restricted by the build-job conditions below.
+# OBS: zizmor flags workflow_run because it can cross a trust boundary.
+# OBS: This exception is local to the intentional, guarded trigger.
+on: # zizmor: ignore[dangerous-triggers] guarded main-branch deployment chain
+  workflow_run:
+    workflows: ["Docs Deploy (Zensical)"]
+    types: [completed]
+    branches: [main]
+    # WHY: Run after the standard Zensical workflow completes.
+    # OBS: The workflow name must match the displayed Actions name.
+    # OBS: The build job verifies the conclusion and event origin.
+
+  workflow_dispatch:
+    # WHY: Allow manual deployment from the Actions tab.
+    # OBS: Manual dispatch does not require an earlier Zensical run.
+
+permissions:
+  contents: read # WHY: Allow source checkout without repository write access.
+  # SECURITY: Do not grant Pages or OIDC write permissions to the build job.
+  # OBS: The deploy job declares its own elevated permissions.
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+  # WHY: Coordinate with the standard Zensical deployment workflow.
+  # OBS: Both workflows use the same concurrency group.
+  # OBS: An in-progress deployment is allowed to finish.
+  # OBS: GitHub concurrency does not guarantee FIFO ordering.
+
+env:
+  PYTHONUNBUFFERED: "1" # WHY: Display Python output immediately in workflow logs.
+  UV_FROZEN: "1" # WHY: Use the committed lockfile without updating it.
+
+jobs:
+  build:
+    name: Build Documentation and Marimo App
+
+    if: >-
+      ${{
+        github.event_name == 'workflow_dispatch' ||
+        (
+          github.event.workflow_run.conclusion == 'success' &&
+          github.event.workflow_run.event == 'push' &&
+          github.event.workflow_run.head_branch == 'main' &&
+          github.event.workflow_run.head_repository.full_name == github.repository
+        ) ||
+        (
+          github.event.workflow_run.conclusion == 'success' &&
+          github.event.workflow_run.event == 'workflow_dispatch' &&
+          github.event.workflow_run.head_branch == 'main' &&
+          github.event.workflow_run.head_repository.full_name == github.repository
+        )
+      }}
+    # WHY: Build after a successful, trusted Zensical run or manual dispatch.
+    # REQ: Do not build from upstream pull-request or fork events.
+    # REQ: Do not replace the website after an unsuccessful upstream run.
+    # OBS: The workflow_run completed event also fires for failed runs.
+    # OBS: Both the source repository and upstream event type are checked.
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # WHY: Build the complete website in a clean Linux environment.
+    # WHY: Stop the job if the build takes unexpectedly long.
+    # OBS: This job prepares the site but does not publish it.
+    # OBS: The deployment environment belongs to the deploy job.
+
+    steps:
+      # ============================================================
+      # A) ASSEMBLE: Checkout code and set up environment
+      # ============================================================
+
+      - name: A1) Checkout repository code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+        # WHY: Required so all subsequent steps can access repository files.
+        # WHY: Avoid retaining Git credentials after checkout.
+        # WHY: Build the same commit used by the completed Zensical workflow.
+        # OBS: workflow_run normally uses the default branch as its event ref.
+        # OBS: head_sha identifies the upstream workflow's source commit.
+        # OBS: Manual dispatch falls back to the selected workflow commit.
+        # SECURITY: The build-job condition restricts the upstream source.
+        # REQ: Both deployments must use the same source revision.
+
+      - name: A2) Install uv (with caching and uv.lock awareness)
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          enable-cache: true
+          # WHY: Cache uv-managed artifacts for faster subsequent runs.
+          cache-dependency-glob: "uv.lock"
+          # WHY: Invalidate dependency cache when the committed lockfile changes.
+
+      - name: A3) Install project Python
+        run: uv python install
+        # WHY: Ensures the Python version declared in .python-version is available.
+        # OBS: uv manages the interpreter locally in the CI environment.
+
+      - name: A4) Install dependencies from committed lockfile
+        run: uv sync --frozen
+        # WHY: Create the project environment from the committed uv.lock.
+        # WHY: Install the tools needed to build documentation and export Marimo.
+        # REQ: Deployment MUST use the committed lockfile without updating it.
+
+      # ============================================================
+      # B) BUILD: Generate documentation and interactive application
+      # ============================================================
+
+      - name: B1) Build documentation with Zensical
+        run: |
+          if [ -f "zensical.toml" ]; then
+            uv run python -m zensical build
+          else
+            echo "No zensical.toml found; skipping docs build."
+          fi
+        # WHY: Generate documentation before adding the Marimo application.
+        # WHY: Both outputs must be included in the same Pages deployment.
+        # WHY: GitHub Pages cannot combine artifacts from separate deployments.
+        # OBS: Zensical writes the generated documentation into site/.
+        # OBS: This build does not modify the standard Zensical workflow.
+        # OBS: Conditional on zensical.toml so this workflow remains reusable
+        #      across Python-managed repositories that may not use Zensical.
+        # OBS: Skipping Zensical still allows Marimo to create site/app/.
+
+      - name: B2) Export Marimo app
+        run: |
+          uv run marimo export html-wasm src/app.py \
+            -o site/app \
+            --mode run
+          test -f site/app/index.html
+        # WHY: Convert the Marimo application into a static WASM website.
+        # WHY: A browser can run the exported app without a Python server.
+        # WHY: Export into site/app/ so the app and Zensical documentation
+        #      are included in the same GitHub Pages artifact.
+        # OBS: Exporting to site/app/ preserves the documentation in site/.
+        # OBS: --mode run provides the application in run mode.
+        # OBS: The resulting application URL ends with /app/.
+        # REQ: site/app/index.html MUST exist before uploading the site.
+        # WHY: Fail the workflow rather than silently publish a broken app link.
+
+      - name: B3) Disable Jekyll
+        run: touch site/.nojekyll
+        # WHY: Tell GitHub Pages not to process the site with Jekyll.
+        # WHY: Preserve the generated documentation and application assets.
+        # OBS: The .nojekyll file is created in the site root.
+        # OBS: It is included automatically in the uploaded Pages artifact.
+
+      # ============================================================
+      # C) CONFIGURE: Prepare the complete GitHub Pages artifact
+      # ============================================================
+
+      - name: C1) Configure GitHub Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
+        # WHY: Prepare GitHub Pages settings and deployment metadata.
+        # REQ: Repository Pages source MUST be GitHub Actions.
+        # OBS: This step does not publish the website.
+
+      - name: C2) Upload Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+        with:
+          path: site
+        # WHY: Package the complete generated website for deployment.
+        # REQ: Upload site/, not site/app/ or _site/.
+        # WHY: The artifact must contain both documentation and the Marimo app.
+        # OBS: site/index.html is the documentation home page when Zensical is used.
+        # OBS: site/app/index.html is the interactive application.
+        # OBS: Uploading the artifact does not publish it.
+        # OBS: The deploy job publishes the artifact after this job succeeds.
+
+  deploy:
+    name: Deploy Documentation and Marimo App
+    needs: build
+    runs-on: ubuntu-latest
+    # WHY: Publish only after the complete website builds successfully.
+    # OBS: If any required build step fails, deployment does not begin.
+
+    permissions:
+      pages: write # WHY: Required to publish to GitHub Pages.
+      id-token: write # WHY: Required for Pages OIDC authentication.
+      # SECURITY: Grant write permissions only to the publishing job.
+      # OBS: No repository contents write permission is granted.
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+      # WHY: Associate the published site with GitHub's Pages environment.
+      # WHY: Display the actual deployed URL in the Actions interface.
+      # OBS: The URL comes from the deployment step in this job.
+      # OBS: The build job does not provide a page_url output.
+
+    steps:
+      # ============================================================
+      # D) DEPLOY: Publish the complete website to GitHub Pages
+      # ============================================================
+
+      - name: D1) Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
+        # WHY: Publish the Pages artifact uploaded by the build job.
+        # WHY: Make both documentation and the Marimo application available.
+        # OBS: GitHub Pages replaces the previous deployment with this artifact.
+        # OBS: The deployment step provides the published page_url output.
+        # OBS: Documentation is available at the repository Pages root.
+        # OBS: The interactive Marimo application is available under /app/.

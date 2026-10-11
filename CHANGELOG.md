@@ -13,7 +13,7 @@ and this project adheres to **[Semantic Versioning](https://semver.org/spec/v2.0
 
 ---
 
-## [0.1.0] - 2026-10-10
+## [0.1.0] - 2026-10-11
 
 ### Added
 
@@ -24,6 +24,7 @@ and this project adheres to **[Semantic Versioning](https://semver.org/spec/v2.0
 - changed from `.pre-commit-config.yaml` to `prek.toml`
 - professional python update with `uvx pup-up@latest`.
 - added project `docs` and `zensical.toml`
+- updated GitHub actions
 
 ---
 
@@ -63,6 +64,7 @@ npx markdownlint-cli2 --fix
 
 # Generate the Marimo application inside the Zensical source tree
 uv run marimo export html-wasm src/app.py -o docs/app --mode run
+# Type y to overwrite as needed
 
 # Verify the exported application
 Test-Path docs/app/index.html

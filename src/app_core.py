@@ -1,7 +1,7 @@
 """app_core.py - reusable logic."""
 
-import tomllib
 from pathlib import Path, PurePath
+import tomllib
 from typing import Any
 from urllib.request import urlopen
 

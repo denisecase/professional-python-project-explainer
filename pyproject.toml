@@ -1,13 +1,15 @@
 # ============================================================
 # pyproject.toml (Python project configuration)
 # ============================================================
-# Updated: 2026-10-10
-# REQ: Python projects SHOULD include pyproject.toml as the single source of truth.
-# WHY: Centralizes project configuration.
-# CUSTOM: Update identity and build tool src folders.
+# Updated: 2026-10-11
+#
+# REQ: All Python src/ projects SHOULD include pyproject.toml.
+# WHAT: Defines project identity, dependencies, and build configuration.
+# WHY: Keeps Python project metadata and package requirements together.
+# CUSTOM: Update project identity, dependencies, and package paths.
 
 # ============================================================
-# SECTION 1: PROJECT IDENTITY (name, version, CUSTOM dependencies)
+# === SECTION: PROJECT IDENTITY ===
 # ============================================================
 
 [project]
@@ -15,48 +17,87 @@ name = "professional-python-project-explainer"
 version = "0.1.0"
 description = "Interactive Marimo explainer for the structure of a professional Python project."
 requires-python = ">=3.14"
+license-files = ["LICENSE"]
+
+# ============================================================
+# === SECTION: PROJECT RUNTIME DEPENDENCIES ===
+# ============================================================
+# Add more as you enhance the project,
+# then run `uv sync` to update the environment.
+
 dependencies = [
+    # CUSTOM: Add any external dependencies the project code requires.
     "marimo>=0.25.1",
 ]
 
+# ============================================================
+# === SECTION: DEVELOPMENT AND DOCUMENTATION DEPENDENCIES ===
+# ============================================================
+# These packages support developing, testing, and documenting the project.
+# They are not required to execute the project code.
+
 [dependency-groups]
-# WHY: Dependency groups separate development and documentation tools from project runtime dependencies.
+# WHY: Development and documentation tools support maintaining, validating,
+#      and documenting the project without becoming runtime dependencies.
+
 dev = [
-    # REQ.DEV.DEPS: External packages used for linting, testing, type checking, etc.
-    "pytest",     # WHY: Test framework for unit and integration tests.
-    "pytest-cov", # WHY: Provides test coverage reporting for quality metrics and CI gating.
-    "ruff",       # WHY: Fast linting and formatting for Python code.
-    "ty",         # WHY: Type checking for static analysis and type safety.
+    # REQ.DEV.DEPS: Standard tools for Python development and validation.
+    "pytest",     # WHY: Run automated tests.
+    "pytest-cov", # WHY: Measure and report test coverage.
+    "ruff",       # WHY: Lint and format Python code.
+    "ty",         # WHY: Check Python types using static analysis.
 ]
+
 docs = [
-  # REQ: External packages used to generate project documentation.
-  "mkdocstrings[python]", # WHY: Auto-generate API docs from docstrings.
-  "zensical", # WHY: Generate and maintain project documentation.
+    # REQ.DOCS.DEPS: Standard tools for generating project documentation.
+    "mkdocstrings[python]", # WHY: Generate API documentation from Python docstrings.
+    "zensical",             # WHY: Build the project documentation website.
 ]
 
 # ============================================================
-# === SECTION 2: TOOL CONFIGURATION ===
+# === SECTION: TOOL CONFIGURATION ===
 # ============================================================
 
-# === MARKDOWNLINT (MARKDOWN LINTING) ===
+# === MARIMO REACTIVE NOTEBOOKS ===
 
-[tool.markdownlint]
-MD033 = false # WHY: Allow inline HTML such as details, summary, iframe, and video.
+[tool.marimo.save]
+autosave = "after_delay"
+autosave_delay = 1000
+format_on_save = true
 
+[tool.marimo.package_management]
+manager = "uv"
+
+[tool.marimo.runtime]
+pythonpath = ["./src"]
+
+# === WITH MARIMO, MUST ADD THIS FOR TY (STATIC TYPE CHECKING) ===
+
+[tool.ty.environment]
+root = ["./src"] # WHY: Specify the root directory for static type checking.
 
 # === UV (PYTHON ENVIRONMENT AND DEPENDENCY MANAGEMENT) ===
 
 [tool.uv]
-# WHY: Install all repository tooling with the canonical `uv sync`.
+# WHY: Install all dependency groups with the canonical uv sync.
 default-groups = "all"
-package = false
 
-# WHY: Give a bit of time to find hijacked releases before installing.
-# CUSTOM: Should match `uv run prek update --freeze --cooldown-days 7`.
+# WHY: Allow time for newly published dependency releases to be evaluated.
 exclude-newer = "7 days"
 
-# WHY: Repository tooling updates must be usable immediately.
-exclude-newer-package = {se-theory-reference-kit = false}
+# ============================================================
+# === SECTION: BUILD SYSTEM ===
+# ============================================================
+#
+# WHAT: Defines how the project's Python package is built and installed.
+# WHY: Hatchling enables uv to install the local src/ package so
+#      Python modules and tests can import project code consistently.
+# REQ: All importable project code MUST live under src/.
+# CUSTOM: Match the package directory under src/ exactly.
 
-[tool.ty.environment]
-root = ["./src"]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"] # CUSTOM: Adjust as needed.

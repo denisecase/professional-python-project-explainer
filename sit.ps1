@@ -45,7 +45,7 @@ if (Test-Path "pyproject.toml") {
 }
 
 # set up or update Python environment
-# uvx pup-clean --delete
+uvx pup-clean --delete
 uv self update
 uv python install
 uv lock --upgrade
